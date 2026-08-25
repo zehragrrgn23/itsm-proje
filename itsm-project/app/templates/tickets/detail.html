@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Talep #{{ ticket.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+    <div>
+        <h3>#{{ ticket.id }} - {{ ticket.title }}</h3>
+        <div class="text-muted small">
+            {{ ticket.category.name if ticket.category else "Kategorisiz" }}
+            &middot; Talep eden: {{ ticket.requester.username }}
+            &middot; Olusturulma: {{ ticket.created_at.strftime('%d.%m.%Y %H:%M') }}
+            {% if ticket.resolved_at %} &middot; Cozulme: {{ ticket.resolved_at.strftime('%d.%m.%Y %H:%M') }}{% endif %}
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <span class="badge badge-priority-{{ ticket.priority }} fs-6">{{ ticket.priority }}</span>
+        <span class="badge badge-status-{{ ticket.status }} fs-6">{{ ticket.status }}</span>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="card-title">Aciklama</h6>
+                <p class="card-text" style="white-space: pre-line;">{{ ticket.description }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title mb-3"><i class="bi bi-chat-left-text"></i> Yorumlar ({{ ticket.comments|length }})</h6>
+
+                {% for c in ticket.comments %}
+                <div class="comment-item">
+                    <div class="fw-semibold">{{ c.author.username }}
+                        <span class="badge bg-secondary badge-status-{{ '' }}">{{ c.author.role }}</span>
+                        <span class="text-muted small fw-normal">{{ c.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                    </div>
+                    <div style="white-space: pre-line;">{{ c.body }}</div>
+                </div>
+                {% else %}
+                <p class="text-muted">Henuz yorum yok.</p>
+                {% endfor %}
+
+                <form method="POST" class="mt-3">
+                    {{ comment_form.hidden_tag() }}
+                    {{ comment_form.body(class="form-control mb-2", rows="3", placeholder="Yorumunuzu yazin...") }}
+                    {{ comment_form.submit(class="btn btn-primary btn-sm") }}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        {% if update_form %}
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title mb-3"><i class="bi bi-gear"></i> Talebi Yonet</h6>
+                <form method="POST" action="{{ url_for('tickets.update_ticket', ticket_id=ticket.id) }}">
+                    {{ update_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ update_form.status.label(class="form-label small") }}
+                        {{ update_form.status(class="form-select form-select-sm") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ update_form.priority.label(class="form-label small") }}
+                        {{ update_form.priority(class="form-select form-select-sm") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ update_form.assigned_agent_id.label(class="form-label small") }}
+                        {{ update_form.assigned_agent_id(class="form-select form-select-sm") }}
+                    </div>
+                    {{ update_form.submit(class="btn btn-primary btn-sm w-100") }}
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Durum Bilgisi</h6>
+                <p class="text-muted small mb-0">
+                    Bu talebi bir destek personeli inceleyip guncelleyecektir.
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Kullanicilar{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-people"></i> Kullanici Yonetimi</h3>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table align-middle">
+            <thead>
+                <tr><th>Kullanici Adi</th><th>E-posta</th><th>Rol</th><th>Kayit Tarihi</th><th>Rolu Degistir</th></tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.email }}</td>
+                    <td><span class="badge bg-secondary">{{ u.role }}</span></td>
+                    <td class="small text-muted">{{ u.created_at.strftime('%d.%m.%Y') }}</td>
+                    <td>
+                        <form method="POST" class="d-flex gap-1"
+                              action="{{ url_for('admin.change_role', user_id=u.id, role='__ROLE__') }}"
+                              onsubmit="this.action = this.action.replace('__ROLE__', this.role_select.value); return true;">
+                            <select name="role_select" class="form-select form-select-sm" style="width:auto;">
+                                {% for r in ["user", "agent", "admin"] %}
+                                <option value="{{ r }}" {% if u.role == r %}selected{% endif %}>{{ r }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-sm btn-outline-primary">Kaydet</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

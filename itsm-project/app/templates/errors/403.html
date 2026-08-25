@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Erisim Engellendi{% endblock %}
+{% block content %}
+<div class="text-center mt-5">
+    <h1 class="display-4 text-danger"><i class="bi bi-shield-lock"></i> 403</h1>
+    <p class="lead">Bu sayfaya erisim yetkiniz bulunmuyor.</p>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Panele Don</a>
+</div>
+{% endblock %}

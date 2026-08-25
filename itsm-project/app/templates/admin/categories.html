@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Kategoriler{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-tags"></i> Kategori Yonetimi</h3>
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Yeni Kategori</h6>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-2">
+                        {{ form.name.label(class="form-label small") }}
+                        {{ form.name(class="form-control form-control-sm") }}
+                    </div>
+                    <div class="mb-2">
+                        {{ form.description.label(class="form-label small") }}
+                        {{ form.description(class="form-control form-control-sm") }}
+                    </div>
+                    {{ form.submit(class="btn btn-primary btn-sm") }}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Mevcut Kategoriler</h6>
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr><th>Ad</th><th>Aciklama</th><th>Talep Sayisi</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        {% for c in categories %}
+                        <tr>
+                            <td>{{ c.name }}</td>
+                            <td class="small text-muted">{{ c.description or "-" }}</td>
+                            <td>{{ c.tickets|length }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_category', category_id=c.id) }}"
+                                      onsubmit="return confirm('Bu kategoriyi silmek istediginize emin misiniz?');">
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-muted">Henuz kategori yok.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

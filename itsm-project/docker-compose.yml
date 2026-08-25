@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: itsm_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-itsm}
+      POSTGRES_USER: ${POSTGRES_USER:-itsm_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-itsm_pass}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-itsm_user} -d ${POSTGRES_DB:-itsm}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # DB portu bilerek host'a acilmiyor (guvenlik). Web container'i ayni
+    # docker network'u uzerinden "db:5432" adresiyle zaten erisebiliyor.
+    # Ihtiyac halinde debug icin gecici olarak "5432:5432" ekleyebilirsiniz.
+
+  web:
+    build: .
+    container_name: itsm_web
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-itsm_user}:${POSTGRES_PASSWORD:-itsm_pass}@db:5432/${POSTGRES_DB:-itsm}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # "0.0.0.0:5000:5000" ile ayni anlama gelir: sunucunun tum agdaki
+      # IP'lerinden 5000 portuna erisim acilir (ic ag icin gerekli olan bu).
+      - "5000:5000"
+    volumes:
+      - .:/app
+
+volumes:
+  pgdata:

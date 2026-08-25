@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Panel{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-speedometer2"></i> Panel</h3>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Toplam Talep</div>
+                <div class="stat-number text-primary">{{ stats.total }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Acik</div>
+                <div class="stat-number text-warning">{{ stats.open }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Cozulen</div>
+                <div class="stat-number text-success">{{ stats.resolved }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card">
+            <div class="card-body">
+                <div class="text-muted small">Kapatilan</div>
+                <div class="stat-number text-dark">{{ stats.closed }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if unassigned_count is not none %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> Atanmamis {{ unassigned_count }} acik talep bulunuyor.
+    <a href="{{ url_for('tickets.list_tickets') }}">Talepleri gor</a>
+</div>
+{% endif %}
+
+<div class="row g-3">
+    <div class="col-md-5">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <h6 class="card-title mb-3">Durum Dagilimi</h6>
+                {% for status, count in status_counts.items() %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge badge-status-{{ status }}">{{ status }}</span>
+                    <span class="fw-semibold">{{ count }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <h6 class="card-title mb-3">Son Talepler</h6>
+                {% if recent_tickets %}
+                <div class="list-group list-group-flush">
+                    {% for t in recent_tickets %}
+                    <a href="{{ url_for('tickets.ticket_detail', ticket_id=t.id) }}"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>#{{ t.id }}</strong> {{ t.title }}
+                            <div class="small text-muted">{{ t.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+                        </div>
+                        <span class="badge badge-status-{{ t.status }}">{{ t.status }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">Henuz talep bulunmuyor.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

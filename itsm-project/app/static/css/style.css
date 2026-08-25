@@ -1,0 +1,61 @@
+:root {
+    --brand: #1f3a5f;
+    --brand-light: #2c5282;
+}
+
+body {
+    background-color: #f4f6f9;
+}
+
+.app-navbar {
+    background-color: var(--brand);
+}
+
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+}
+
+.auth-card {
+    max-width: 420px;
+    width: 100%;
+}
+
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.stat-card .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.badge-status-Acik { background-color: #0d6efd; }
+.badge-status-Islemde { background-color: #fd7e14; }
+.badge-status-Beklemede { background-color: #6c757d; }
+.badge-status-Cozuldu { background-color: #198754; }
+.badge-status-Kapatildi { background-color: #343a40; }
+
+.badge-priority-Dusuk { background-color: #6c757d; }
+.badge-priority-Orta { background-color: #0dcaf0; color: #000; }
+.badge-priority-Yuksek { background-color: #fd7e14; }
+.badge-priority-Kritik { background-color: #dc3545; }
+
+.ticket-card {
+    border-radius: 10px;
+    transition: box-shadow 0.15s ease-in-out;
+}
+.ticket-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.comment-item {
+    border-left: 3px solid var(--brand-light);
+    padding-left: 12px;
+    margin-bottom: 14px;
+}
